@@ -1,5 +1,7 @@
-from database import engine
 
+from seed_data import seed_players
+from database import SessionLocal
+from database import engine
 from db_models import Base
 
 # Import FastAPI to create our API server
@@ -22,6 +24,14 @@ app = FastAPI(
 # Create database tables automatically on startup
 Base.metadata.create_all(bind=engine)
 
+
+@app.on_event("startup")
+def startup():
+    db = SessionLocal()
+    try:
+        seed_players(db)
+    finally:
+        db.close()
 
 # Root endpoint (basic health check)
 # This lets us confirm the API is running
