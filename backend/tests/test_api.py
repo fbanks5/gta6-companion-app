@@ -31,3 +31,20 @@ def test_player_rank():
     assert data["rank_title"] == "Rising Hustler"
     assert data["xp"] == 2500
     assert data["xp_to_next_level"] == 500
+
+
+# Test creating a new player rank entry
+def test_create_player_rank():
+    payload = {
+        "player_name": "TestUser",
+        "level": 5,
+        "rank_title": "Beginner",
+        "xp": 800,
+        "xp_to_next_level": 200
+    }
+
+    response = client.post("/api/player-rank", json=payload)
+
+    assert response.status_code == 200
+    assert response.json()["player_name"] == "TestUser"
+    assert response.json()["level"] == 5

@@ -18,3 +18,11 @@ router = APIRouter(
 @router.get("/player-rank", response_model=PlayerRank)
 def get_player_rank():
     return get_mock_player_rank()
+
+@router.post("/player-rank", response_model=PlayerRank)
+def create_player_rank(player: PlayerRank):
+    """
+    Accepts player data from the request body and returns it.
+    For now, this simulates saving data (no database yet).
+    """
+    return player
