@@ -34,6 +34,16 @@ def get_player_by_name(name: str):
             return player
     return None
 
+# Delete a player by name using a case-insensitive search.
+# Returns True if a player was deleted, or False if no matching player exists.
+def delete_player_by_name(player_name: str):
+    for index, player in enumerate(player_rank_storage):
+        if player.player_name.lower() == player_name.lower():
+            del player_rank_storage[index]
+            return True
+
+    return False
+
 
 
 

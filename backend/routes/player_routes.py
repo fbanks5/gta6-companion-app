@@ -9,7 +9,9 @@ from models.player import PlayerRank
 from services.player_service import(
     get_all_player_ranks,
     save_player_rank,
-    get_player_by_name)
+    get_player_by_name,
+    delete_player_by_name
+)
 
 
 # Create a router for player-related endpoints
@@ -49,5 +51,16 @@ def get_player(player_name: str):
         raise HTTPException(status_code=404, detail="Player not found")
 
     return player
+
+@router.delete("/player-rank/{player_name}")
+def delete_player(player_name: str):
+    deleted = delete_player_by_name(player_name)
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    return {
+        "message": f"Player '{player_name}' deleted successfully."
+    }
 
 

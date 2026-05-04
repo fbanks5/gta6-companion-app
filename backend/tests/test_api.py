@@ -71,3 +71,30 @@ def test_get_player_not_found():
     response = client.get("/api/player-rank/UnknownPlayer")
 
     assert response.status_code == 404
+
+
+def test_delete_player_by_name():
+    payload = {
+        "player_name": "DeleteMe",
+        "level": 10,
+        "rank_title": "Temporary Player",
+        "xp": 300,
+        "xp_to_next_level": 100
+    }
+
+    create_response = client.post("/api/player-rank", json=payload)
+    assert create_response.status_code == 200
+
+    delete_response = client.delete("/api/player-rank/DeleteMe")
+    assert delete_response.status_code == 200
+    assert delete_response.json()["message"] == "Player 'DeleteMe' deleted successfully."
+
+    lookup_response = client.get("api/player-rank/DeleteMe")
+    assert lookup_response.status_code == 404
+
+
+# Test deleting a player that does not exist
+def test_delete_player_not_found():
+    response = client.delete("/api/player-rank/NoSuchPlayer")
+
+    assert response.status_code == 404
