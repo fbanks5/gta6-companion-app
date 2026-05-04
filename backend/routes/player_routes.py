@@ -1,9 +1,12 @@
+# Import List so our GET endpoint can return multiple player rank records
+from typing import List
+
 # Import APIRouter to organize related API endpoints
 from fastapi import APIRouter
 
-# Import the response model and service function
+# Import the response model and service functions
 from models.player import PlayerRank
-from services.player_service import get_mock_player_rank
+from services.player_service import get_all_player_ranks, save_player_rank
 
 
 # Create a router for player-related endpoints
@@ -13,16 +16,19 @@ router = APIRouter(
 )
 
 
-# Player Rank endpoint
-# This returns mock player rank data from the service layer
-@router.get("/player-rank", response_model=PlayerRank)
+# Get all player rank records
+# This returns every player rank currently stored in memory
+@router.get("/player-rank", response_model=List[PlayerRank])
 def get_player_rank():
-    return get_mock_player_rank()
+    return get_all_player_ranks()
 
+
+# Create a new player rank record
+# This saves player-submitted rank data into temporary memory
 @router.post("/player-rank", response_model=PlayerRank)
 def create_player_rank(player: PlayerRank):
     """
     Accepts player data from the request body and returns it.
     For now, this simulates saving data (no database yet).
     """
-    return player
+    return save_player_rank(player)

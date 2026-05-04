@@ -20,17 +20,15 @@ def test_health_check():
 
 
 # Test the player rank endpoint
-# This verifies that player rank data returns correctly
+# This verifies that the endpoint returns a list of player rank records
 def test_player_rank():
     response = client.get("/api/player-rank")
     data = response.json()
 
     assert response.status_code == 200
-    assert data["player_name"] == "Frantz"
-    assert data["level"] == 10
-    assert data["rank_title"] == "Rising Hustler"
-    assert data["xp"] == 2500
-    assert data["xp_to_next_level"] == 500
+    assert isinstance(data, list)
+    assert len(data) >= 1
+    assert data[0]["player_name"] == "Frantz"
 
 
 # Test creating a new player rank entry
