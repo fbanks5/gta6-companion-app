@@ -140,3 +140,48 @@ def test_update_player_not_found():
     response = client.put("/api/player-rank/Ghost", json=payload)
 
     assert response.status_code == 404
+
+
+# Test that an empty player name is rejected
+def test_create_player_with_empty_name_fails():
+    payload = {
+        "player_name": "",
+        "level": 5,
+        "rank_title": "Rookie",
+        "xp": 500,
+        "xp_to_next_level": 100
+    }
+
+    response = client.post("/api/player-rank", json=payload)
+
+    assert response.status_code == 422
+
+
+# Test that a negative level is rejected
+def test_create_player_with_negative_level_fails():
+    payload = {
+        "player_name": "BadLevelPlayer",
+        "level": -1,
+        "rank_title": "Rookie",
+        "xp": 500,
+        "xp_to_next_level": 100
+    }
+
+    response = client.post("/api/player-rank", json=payload)
+
+    assert response.status_code == 422
+
+
+
+def test_create_player_with_negative_xp_fails():
+    payload = {
+        "player_name": "BadXpPlayer",
+        "level": 5,
+        "rank_title": "Rookie",
+        "xp": -500,
+        "xp_to_next_level": 100
+    }
+
+    response = client.post("/api/player-rank", json=payload)
+
+    assert response.status_code == 422
