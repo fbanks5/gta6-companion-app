@@ -2,11 +2,14 @@
 from typing import List
 
 # Import APIRouter to organize related API endpoints
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 # Import the response model and service functions
 from models.player import PlayerRank
-from services.player_service import get_all_player_ranks, save_player_rank
+from services.player_service import(
+    get_all_player_ranks,
+    save_player_rank,
+    get_player_by_name)
 
 
 # Create a router for player-related endpoints
@@ -23,6 +26,7 @@ def get_player_rank():
     return get_all_player_ranks()
 
 
+
 # Create a new player rank record
 # This saves player-submitted rank data into temporary memory
 @router.post("/player-rank", response_model=PlayerRank)
@@ -32,3 +36,18 @@ def create_player_rank(player: PlayerRank):
     For now, this simulates saving data (no database yet).
     """
     return save_player_rank(player)
+
+
+
+# Get a specific player by name
+# Returns player data or 404 if not found
+@router.get("/player-rank/{player_name}", response_model=PlayerRank)
+def get_player(player_name: str):
+    player = get_player_by_name(player_name)
+
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    return player
+
+

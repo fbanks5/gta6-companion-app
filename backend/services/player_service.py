@@ -27,3 +27,13 @@ def save_player_rank(player: PlayerRank) -> PlayerRank:
     player_rank_storage.append(player)
     return player
 
+
+def get_player_by_name(name: str):
+    for player in player_rank_storage:
+        if player.player_name.lower() == name.lower():
+            return player
+    return None
+
+
+
+

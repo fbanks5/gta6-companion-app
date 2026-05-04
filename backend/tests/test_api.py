@@ -46,3 +46,28 @@ def test_create_player_rank():
     assert response.status_code == 200
     assert response.json()["player_name"] == "TestUser"
     assert response.json()["level"] == 5
+
+
+# Test retrieving a player by name
+def test_get_player_by_name():
+    payload = {
+        "player_name": "Frantz",
+        "level": 10,
+        "rank_title": "Rising Hustler",
+        "xp": 2500,
+        "xp_to_next_level": 500
+    }
+
+    client.post("/api/player-rank", json=payload)
+
+    response = client.get("/api/player-rank/Frantz")
+
+    assert response.status_code == 200
+    assert response.json()["player_name"]  == "Frantz"
+
+
+# Test retrieving a non-existent player
+def test_get_player_not_found():
+    response = client.get("/api/player-rank/UnknownPlayer")
+
+    assert response.status_code == 404
