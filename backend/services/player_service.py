@@ -1,5 +1,5 @@
 # Import List so we can store multiple PlayerRank objects in memory
-from typing import List
+from typing import List, Optional
 
 # Import the player rank model so this service can return structured player data
 from models.player import PlayerRank
@@ -43,6 +43,17 @@ def delete_player_by_name(player_name: str):
             return True
 
     return False
+
+
+# Update an existing player by name.
+# Returns the updated player if found, otherwise None.
+def update_player_by_name(player_name: str, updated_player: PlayerRank) -> Optional[PlayerRank]:
+    for index, player in enumerate(player_rank_storage):
+        if player.player_name.lower() == player_name.lower():
+            player_rank_storage[index] = updated_player
+            return updated_player
+
+    return None
 
 
 

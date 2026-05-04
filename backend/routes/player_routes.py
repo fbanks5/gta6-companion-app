@@ -10,7 +10,8 @@ from services.player_service import(
     get_all_player_ranks,
     save_player_rank,
     get_player_by_name,
-    delete_player_by_name
+    delete_player_by_name,
+    update_player_by_name
 )
 
 
@@ -63,4 +64,14 @@ def delete_player(player_name: str):
         "message": f"Player '{player_name}' deleted successfully."
     }
 
+
+# Update a specific player by name
+@router.put("/player-rank/{player_name}", response_model=PlayerRank)
+def update_player(player_name: str, updated_player: PlayerRank):
+    updated = update_player_by_name(player_name, updated_player)
+
+    if updated is None:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    return updated
 

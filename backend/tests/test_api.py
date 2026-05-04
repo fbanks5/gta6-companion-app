@@ -98,3 +98,45 @@ def test_delete_player_not_found():
     response = client.delete("/api/player-rank/NoSuchPlayer")
 
     assert response.status_code == 404
+
+
+
+def test_update_player_by_name():
+    payload = {
+        "player_name": "UpdateMe",
+        "level": 5,
+        "rank_title": "Starter",
+        "xp": 300,
+        "xp_to_next_level": 100
+    }
+
+    client.post("/api/player-rank", json=payload)
+
+    updated_payload = {
+        "player_name": "UpdateMe",
+        "level": 10,
+        "rank_title": "Boss",
+        "xp": 2000,
+        "xp_to_next_level": 300
+    }
+
+    response = client.put("/api/player-rank/UpdateMe", json=updated_payload)
+
+    assert response.status_code == 200
+    assert response.json()["level"] == 10
+    assert response.json()["rank_title"] == "Boss"
+
+
+
+def test_update_player_not_found():
+    payload = {
+        "player_name": "Ghost",
+        "level": 99,
+        "rank_title": "Phantom",
+        "xp": 9999,
+        "xp_to_next_level": 0
+    }
+
+    response = client.put("/api/player-rank/Ghost", json=payload)
+
+    assert response.status_code == 404
