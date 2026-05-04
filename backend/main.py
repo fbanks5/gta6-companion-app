@@ -1,3 +1,7 @@
+from database import engine
+
+from db_models import Base
+
 # Import FastAPI to create our API server
 from fastapi import FastAPI
 
@@ -14,6 +18,9 @@ app = FastAPI(
     description="Prototype API for tracking player rank and future AI insights.",
     version="0.1.0"
 )
+
+# Create database tables automatically on startup
+Base.metadata.create_all(bind=engine)
 
 
 # Root endpoint (basic health check)
