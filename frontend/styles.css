@@ -1,0 +1,72 @@
+/* Basic page setup */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+/* Centers the app and gives it readable spacing */
+.app-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* Top title section */
+.hero {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+/* Card containers for form and player list */
+.card {
+    background-color: #1e293b;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+}
+
+/* Makes the form stack cleanly */
+form {
+    display: grid;
+    gap: 12px;
+}
+
+/* Shared input styling */
+input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+/* Submit button */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #22c55e;
+    color: #052e16;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #16a34a;
+}
+
+/* Message area for success/errors */
+#message {
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+/* Individual player card */
+.player-card {
+    background-color: #334155;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Makes the page display properly on phones, tablets, and desktops -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GTA 6 Companion App</title>
+
+    <!-- Links this HTML page to our stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="app-container">
+
+        <!-- Main page title -->
+        <section class="hero">
+            <h1>GTA 6 Companion App</h1>
+            <p>Track player rank, XP, and progression.</p>
+        </section>
+
+        <!-- Form for adding a new player rank -->
+        <section class="card">
+            <h2>Add Player Rank</h2>
+
+            <form id="playerForm">
+                <input id="playerName" type="text" placeholder="Player name" required>
+                <input id="level" type="number" placeholder="Level" required>
+                <input id="rankTitle" type="text" placeholder="Rank title" required>
+                <input id="xp" type="number" placeholder="XP" required>
+                <input id="xpToNextLevel" type="number" placeholder="XP to next level" required>
+
+                <button type="submit">Add Player</button>
+            </form>
+
+            <!-- JavaScript will use this area to show success or error messages -->
+            <p id="message"></p>
+        </section>
+
+        <!-- Section where player cards will appear -->
+        <section class="card">
+            <h2>Player Rankings</h2>
+
+            <div id="playersList">
+                <!-- JavaScript will insert player cards here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Links this page to our JavaScript file -->
+    <script src="app.js"></script>
+</body>
+</html>
