@@ -8,6 +8,12 @@ from sqlalchemy.orm import sessionmaker
 # Import FastAPI app and database dependencies
 from main import app
 from database import Base, get_db
+from rate_limiter import limiter
+
+# Disable rate limiting during tests
+# All pytest requests come from the same testclient",
+# so without this, tests will hit the limit and fail randomly
+limiter.enabled = False
 
 # Test database file
 # This keeps tests separate from your real development database

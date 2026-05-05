@@ -4,6 +4,10 @@ from fastapi.testclient import TestClient
 # Import the FastAPI app from main.py
 from main import app
 
+# Import limiter so this test file can temporarily enable rate limiting
+# for the specific test taht verifies rate-limit behavior.
+from rate_limiter import limiter
+
 
 # Create a test client that can send requests to our API during testing
 client = TestClient(app)
@@ -196,3 +200,60 @@ def test_create_player_with_negative_xp_fails():
     response = client.post("/api/player-rank", json=payload)
 
     assert response.status_code == 422
+
+
+# Test duplicate player names return a clean 409 Conflict response
+# This prevents raw database error from leaking to API users.
+def test_duplicate_player_name_returns_conflict():
+    payload = {
+        "player_name": "DuplicatePlayer",
+        "level": 1,
+        "rank_title": "Tester",
+        "xp": 0,
+        "xp_to_next_level": 100
+    }
+
+    first_response = client.post("/api/player-rank", json=payload)
+    assert first_response.status_code == 200
+
+    second_response = client.post("/api/player-rank", json=payload)
+    assert second_response.status_code == 409
+    assert second_response.json()["detail"] == "Player name already exists."
+
+
+# Test that the POST /api/player-rank endpoint enforces rate limiting
+# Most tests disable rate limiting because all TestClient requests come from the same test client.
+# This test temporarily enables the limiter so we can verify the security control works.
+def test_create_player_rank_rate_limit():
+    # Turn rate limiting back on only for this test.
+    limiter.enabled = True
+
+    try:
+        # Send 6 POST requests quickly.
+        # The endpoint allows 5 requests per minute, so the 6th should be blocked.
+        responses = []
+
+        for index in range(6):
+            payload = {
+                "player_name": f"RateLimitTest{index}",
+                "level": 1,
+                "rank_title": "Tester",
+                "xp": 0,
+                "xp_to_next_level": 100
+            }
+
+            response = client.post("/api/player-rank", json=payload)
+            responses.append(response)
+
+        # First 5 requests should succeed.
+        for response in responses[:5]:
+            assert response.status_code == 200
+
+        # 6th request should be blocked by SlowAPI.
+        assert responses[5].status_code == 429
+        assert responses[5].json()["detail"] == "Rate limit exceeded.  Please try again later."
+
+    finally:
+        # Always turn rate limiting back off after this test.
+        # This prevents the limiter from breaking other tests.
+        limiter.enabled = False

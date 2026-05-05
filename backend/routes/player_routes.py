@@ -1,11 +1,16 @@
 from database import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
+# Import limiter from main so we can apply rate limits to specific routes
+from rate_limiter import limiter
 
 # Import List so our GET endpoint can return multiple player rank records
 from typing import List
 
 # Import APIRouter to organize related API endpoints
-from fastapi import APIRouter, HTTPException, Depends
+# SlowAPI requires the request object to identify who is making the request for rate limiting.
+from fastapi import APIRouter, HTTPException, Depends, Request
 
 # Import the response model and service functions
 from models.player import PlayerRank
@@ -36,14 +41,28 @@ def get_player_rank(db: Session = Depends(get_db)):
 # Create a new player rank record
 # This saves player-submitted rank data into temporary memory
 @router.post("/player-rank", response_model=PlayerRank)
-def create_player_rank(player: PlayerRank, db: Session = Depends(get_db)):
-    """
-    Accepts player data from the request body and returns it.
-    For now, this simulates saving data (no database yet).
-    """
-    return save_player_rank(db, player)
+@limiter.limit("5/minute")
+def create_player_rank(
+        request: Request,
+        player: PlayerRank,
+        db: Session = Depends(get_db)
+):
+    try:
+        """
+            Accepts player data from the request body and returns it.
+            For now, this simulates saving data (no database yet).
+            """
+        return save_player_rank(db, player)
 
+    except IntegrityError:
+        # Roll back the failed database transaction so the session can continue safely.
+        db.rollback()
 
+        # Return a clean 409 Conflict instead of leaking a database stack trace.
+        raise HTTPException(
+            status_code=409,
+            detail="Player name already exists."
+        )
 
 # Get a specific player by name
 # Returns player data or 404 if not found
